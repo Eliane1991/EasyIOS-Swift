@@ -13,8 +13,29 @@ import Bond
 let UIViewAnimationDuration: NSTimeInterval = 1
 let UIViewAnimationSpringDamping: CGFloat = 0.5
 let UIViewAnimationSpringVelocity: CGFloat = 0.5
-
+var UIViewGestureUniqueArray:CGFloat = 0.6
 extension UIView {
+    
+//    public var gestureUniqueArray: [String:DisposableType] {
+//        get {
+//            if let viewGestureUniqueArray: AnyObject = objc_getAssociatedObject(self, &UIViewGestureUniqueArray) {
+//                return viewGestureUniqueArray as! Dictionary
+//            } else {
+//                let mapData = [String:DisposableType]()
+//                objc_setAssociatedObject(self, &UIViewGestureUniqueArray, mapData, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+//                return mapData
+//            }
+//        }set(value){
+////            if let viewGestureUniqueArray: AnyObject = objc_getAssociatedObject(self, &UIViewGestureUniqueArray) {
+////                
+////            } else {
+////                let mapData = [String:DisposableType]()
+////                mapData[]
+////            }
+//        
+//        }
+//       
+//    }
     
     // MARK: Custom Initilizer
     
@@ -181,7 +202,7 @@ extension UIView {
     // MARK: Anchor Extensions
     
     public func setAnchorPosition (anchorPosition: AnchorPosition) {
-        println(anchorPosition.rawValue)
+        print(anchorPosition.rawValue)
         self.layer.anchorPoint = anchorPosition.rawValue
     }
     
@@ -307,16 +328,16 @@ extension UIView {
             self.addGestureRecognizer(pan)
     }
     
-    public func whenTap(number:NSInteger = 1,block:()->Void){
+    public func whenTap(number:NSInteger = 1,block:()->Void) -> DisposableType{
         self.userInteractionEnabled = true
-        TapGestureDynamic<NSInteger>(view: self,number:number) **->> Bond<NSInteger>{ value in
+        return bnd_tapGestureEvent(number).observe { (_) -> () in
             block()
         }
     }
     
-    public func whenSwipe(number:NSInteger = 1,direction:UISwipeGestureRecognizerDirection,block:()->Void){
+    public func whenSwipe(number:NSInteger = 1,direction:UISwipeGestureRecognizerDirection,block:()->Void) -> DisposableType{
         self.userInteractionEnabled = true
-        SwipeGestureDynamic<NSInteger>(view: self,number:number,direction:direction) **->> Bond<NSInteger>{ value in
+        return bnd_swipeGestureEvent(number).observe { (_) -> () in
             block()
         }
     }
