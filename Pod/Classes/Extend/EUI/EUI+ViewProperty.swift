@@ -42,6 +42,10 @@ class ViewProperty :NSObject{
     var flexPadding = UIEdgeInsetsZero
     var flexWrap = false
     var flex:CGFloat = 0.0
+    var flexFixedSize = CGSizeZero
+    var flexMinimumSize = CGSizeZero
+    var flexMaximumSize = CGSizeMake(CGFloat.max, CGFloat.max)
+    
     
     func getView() -> UIView{
         if self.tag == nil {
@@ -71,9 +75,24 @@ class ViewProperty :NSObject{
     }
     
     func renderTag(pelement:OGElement){
-        self.tagOut += ["id","style","align","margin","type","image-mode","name","width","height","class","ontap","onswipe","ontap-bind","onswipe-bind","frame","reuseid","push","present","align-self","align-items","justify-content","flex-direction","content-direction","flex-margin","flex-padding","flex-wrap","flex"]
+        self.tagOut += ["id","style","align","margin","type","image-mode","name","width","height","class","ontap","onswipe","ontap-bind","onswipe-bind","frame","reuseid","push","present","align-self","align-items","justify-content","flex-direction","content-direction","flex-margin","flex-padding","flex-wrap","flex","flex-minimum-size"]
         
         self.tag = pelement.tag
+        
+        if let flexMinimumSize = EUIParse.string(pelement, key: "flex-minimum-size"){
+            self.flexEnable = true
+            self.flexMinimumSize = CGSizeFromString(flexMinimumSize)
+        }
+        
+        if let flexMaximumSize = EUIParse.string(pelement, key: "flex-maximum-size"){
+            self.flexEnable = true
+            self.flexMaximumSize = CGSizeFromString(flexMaximumSize)
+        }
+        
+        if let flexFixedSize = EUIParse.string(pelement, key: "flex-fixed-size"){
+            self.flexEnable = true
+            self.flexFixedSize = CGSizeFromString(flexFixedSize)
+        }
         
         if let flexMargin = EUIParse.string(pelement, key: "flex-margin"){
             self.flexEnable = true
@@ -94,23 +113,23 @@ class ViewProperty :NSObject{
         
         if let alignSelf = EUIParse.string(pelement, key: "align-self"){
             self.flexEnable = true
-            self.flexAlignSelf = ViewProperty.alignItemsFormat(alignSelf)
+            self.flexAlignSelf = alignSelf.alignItems
         }
         if let alignItems = EUIParse.string(pelement, key: "align-items"){
             self.flexEnable = true
-            self.flexAlignItems = ViewProperty.alignItemsFormat(alignItems)
+            self.flexAlignItems = alignItems.alignItems
         }
         if let justifyContent = EUIParse.string(pelement, key: "justify-content"){
             self.flexEnable = true
-            self.flexJustifyContent = ViewProperty.justifyContentFormat(justifyContent)
+            self.flexJustifyContent = justifyContent.justifyContent
         }
         if let flexDirection = EUIParse.string(pelement, key: "flex-direction"){
             self.flexEnable = true
-            self.flexDirection = ViewProperty.flexDirectionFormat(flexDirection)
+            self.flexDirection = flexDirection.flexDirection
         }
         if let contentDirection = EUIParse.string(pelement, key: "content-direction"){
             self.flexEnable = true
-            self.flexContentDirection = ViewProperty.flexContentDirectionFormat(contentDirection)
+            self.flexContentDirection = contentDirection.flexContentDirection
         }
         
         if let tagId = EUIParse.string(pelement,key:"id") {
@@ -172,7 +191,7 @@ class ViewProperty :NSObject{
         }
         
         if let theImageMode = EUIParse.string(pelement,key:"image-mode") {
-            self.imageMode = ViewProperty.imageModeFormat(theImageMode)
+            self.imageMode = theImageMode.viewContentMode
         }
         
         if let theGestureAction = EUIParse.string(pelement, key: "ontap") {
@@ -232,6 +251,9 @@ class ViewProperty :NSObject{
             view.flexPadding = self.flexPadding
             view.flexWrap = self.flexWrap
             view.flex = self.flex
+            view.flexFixedSize = self.flexFixedSize
+            view.flexMinimumSize = self.flexMinimumSize
+            view.flexMaximumSize = self.flexMaximumSize
         }
         
         if let frame = self.frame {
@@ -254,108 +276,9 @@ class ViewProperty :NSObject{
     
     func childLoop(pelement:OGElement){
         for element in pelement.children {
-            if element.isKindOfClass(OGElement) {
-                if let pro = EUIParse.loopElement(element as! OGElement) {
-                    self.subTags.append(pro)
-                }
+            if let ele = element as? OGElement,let pro = EUIParse.loopElement(ele) {
+                self.subTags.append(pro)
             }
-        }
-    }
-    
-    
-    class func imageModeFormat(str:String) -> UIViewContentMode{
-        switch str.trim {
-        case "ScaleToFill":
-            return .ScaleToFill
-        case "ScaleAspectFit":
-            return .ScaleAspectFit
-        case "ScaleAspectFill":
-            return .ScaleAspectFill
-        case "Redraw":
-            return .Redraw
-        case "Center":
-            return .Center
-        case "Top":
-            return .Top
-        case "Bottom":
-            return .Bottom
-        case "Left":
-            return .Left
-        case "Right":
-            return .Right
-        case "TopLeft":
-            return .TopLeft
-        case "TopRight":
-            return .TopRight
-        case "BottomLeft":
-            return .BottomLeft
-        case "BottomRight":
-            return .BottomRight
-        default:
-            return .ScaleToFill
-        }
-    }
-    
-    
-    class func justifyContentFormat(str:String) -> FLEXBOXJustification{
-        switch str.trim {
-        case "center":
-            return .Center
-        case "flex-start":
-            return .FlexStart
-        case "flex-end":
-            return .FlexEnd
-        case "space-between":
-            return .SpaceBetween
-        case "space-around":
-            return .SpaceAround
-        default:
-            return .FlexStart
-        }
-    }
-    
-    class func alignItemsFormat(str:String) -> FLEXBOXAlignment{
-        switch str.trim {
-        case "center":
-            return .Center
-        case "flex-start":
-            return .FlexStart
-        case "flex-end":
-            return .FlexEnd
-        case "stretch":
-            return .Stretch
-        case "auto":
-            return .Auto
-        default:
-            return .Auto
-        }
-    }
-    
-    class func flexDirectionFormat(str:String) -> FLEXBOXFlexDirection{
-        switch str.trim {
-        case "column":
-            return .Column
-        case "row":
-            return .Row
-        case "row-reverse":
-            return .RowReverse
-        case "column-reverse":
-            return .ColumnReverse
-        default:
-            return .Row
-        }
-    }
-    
-    class func flexContentDirectionFormat(str:String) -> FLEXBOXContentDirection{
-        switch str.trim {
-        case "ltr":
-            return .LeftToRight
-        case "rtl":
-            return .RightToLeft
-        case "inherit":
-            return .Inherit
-        default:
-            return .LeftToRight
         }
     }
 

@@ -9,11 +9,11 @@ EasyIOS Swift 2.0版本新鲜出炉！
 [![Platform](https://img.shields.io/cocoapods/p/EasyIOS-Swift.svg?style=flat)](http://cocoapods.org/pods/EasyIOS-Swift)
 [![qq](http://img.shields.io/badge/QQ%E7%BE%A4-340906744-green.svg)](http://shang.qq.com/wpa/qunwpa?idkey=562d002e275a8199081313b00580fb7111a4faf694216a239064d29f5238bc91)
 
-## Star不可少啊！
-
 * [IOSX - EasyIOS官方论坛](http://www.iosx.me)
-* [EasyIOS-ObjC版本](https://github.com/EasyIOS/EasyIOS)
+* [EasyIOS-ObjC版本](https://github.com/zhuchaowe/EasyIOS)
 * [EasyIOS-Swift教程](http://zhuchaowe.gitbooks.io/easyios-swift/content/)
+
+QQ群:340906744
 
 ## DEMO Video
 [![ScreenShot](http://g3.tdimg.com/0d239f40817111df0dfe941cbc6f9d5e/b0_2.jpg)](http://www.tudou.com/v/aWwPwUhdt5E/&rpid=6059352&resourceId=6059352_04_05_99/v.swf)
@@ -149,7 +149,7 @@ it, simply add the following line to your Podfile:
 ```ruby
 platform :ios, '8.0'
 use_frameworks!
-pod "EasyIOS-Swift" :git => 'https://github.com/EasyIOS/EasyIOS-Swift'
+pod 'EasyIOS-Swift', '~> 2.0'
 ```
 
 import the EasyIOS
